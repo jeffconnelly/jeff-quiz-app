@@ -1,18 +1,24 @@
 'use strict';
 
-// -Create classes so any functions related to a certain part of our process in the app, bunch them together into an 
-// appropriate object and have the methods on that object available.
-// -Want to get away from all of our globals.  
-// -Find a place for it within one of our tobal level objects we'll create
-// -Any function in the global space should be placed within the context of one of the top level objects
+
+// OOP Notes:
+// =============== 
+// Create classes so any functions related to a certain part of our process in the app, bunch them together to an appropriate object and have the methods on that object available.
+// Want to get away from all of our globals.  
+// Find a place for it within one of our tobal level objects we'll create
+// Any function in the global space should be placed within the context of one of the top level objects
+// Expect to use a constructor for setting 1) default values or 2) values passed in when creating the object.
 
 
+
+// Remaining to Group:
+// =============== 
 // Group render functions together, render function can sit in object as well?
-// Group event listeners together?
+/* Group event listeners together ..?
+  From Rich: I've seen solutions both ways. they need access to the store, the api, the renderer... so they do need to be passed those instantiations or live in one of the classes that has access to them.  our sample solution has the handlers in the renderer class  
+  */
 
 
-
-// Group API functions together
 
 // API Data Retrieval 
 // =============== Need to move global session Token into NewApiCall
@@ -109,8 +115,7 @@ class ApiDecoration  {
 const TriviaDecoration = new ApiDecoration();
 console.log(TriviaDecoration);
 
-
-// Store Section
+// Create Store
 // =============== Need to move global store into newStore constructor.
 class newStore {
 
@@ -161,35 +166,9 @@ const TriviaStore = new newStore();
 let store = TriviaStore.getInitialStore();  
 console.log(store);
 
-// class Renderer {
-
-// }
-
-const TOP_LEVEL_COMPONENTS = [
-  'js-intro', 'js-question', 'js-question-feedback', 
-  'js-outro', 'js-quiz-status'
-];
-
-let QUESTIONS = [];
-
-// token is global because store is reset between quiz games, but token should persist for 
-// entire session
-
-// Helper functions
-// ===============
-const hideAll = function() {
-  TOP_LEVEL_COMPONENTS.forEach(component => $(`.${component}`).hide());
-};
-
-
-const getQuestion = function(index) {
-  return QUESTIONS[index];
-};
 
 // HTML generator functions
 // ========================
-
-// Group template generator functions together
 
 class newTemplate {
   constructor () {
@@ -234,6 +213,29 @@ class newTemplate {
 
 const TriviaTemplate = new newTemplate();
 
+// Render Class Here
+// =============== 
+
+// class Renderer {
+
+// }
+
+const TOP_LEVEL_COMPONENTS = [
+  'js-intro', 'js-question', 'js-question-feedback', 
+  'js-outro', 'js-quiz-status'
+];
+
+let QUESTIONS = [];
+
+// Helper functions - remaining placed with render class?
+// ===============
+const hideAll = function() {
+  TOP_LEVEL_COMPONENTS.forEach(component => $(`.${component}`).hide());
+};
+
+const getQuestion = function(index) {
+  return QUESTIONS[index];
+};
 
 
 // Render function - uses `store` object to construct entire page every time it's run
@@ -326,8 +328,6 @@ const handleNextQuestion = function() {
 };
 
 const TriviaCall = new NewApiCall('https://opentdb.com'); 
-
-
 
 
 // On DOM Ready, run render() and add event listeners
