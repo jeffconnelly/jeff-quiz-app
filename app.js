@@ -8,7 +8,6 @@
 
 
 // Group render functions together, render function can sit in object as well?
-// Group template generator functions together
 // Group event listeners together?
 
 
@@ -16,7 +15,7 @@
 // Group API functions together
 
 // API Data Retrieval 
-// ===============
+// =============== Need to move global session Token into NewApiCall
 let sessionToken;
 
 class NewApiCall {
@@ -112,25 +111,25 @@ console.log(TriviaDecoration);
 
 
 // Store Section
-// ===============
-
-
-const getInitialStore = function() {
-  return {
-    page: 'intro',
-    currentQuestionIndex: null,
-    userAnswers: [],
-    feedback: null,
-    sessionToken,
-  };
-}
-
-let store = getInitialStore();  
-
+// =============== Need to move global store into newStore constructor.
 class newStore {
 
   constructor () {
+    this.page = 'intro';
+    this.currentQuestionIndex = null;
+    this.userAnswers = [];
+    this.feedback = null;
+    this.sessionToken = null;
+  }
 
+  getInitialStore(){
+    return {
+      page: 'intro',
+      currentQuestionIndex: null,
+      userAnswers: [],
+      feedback: null,
+      sessionToken,
+    };
   }
 
   getProgress() {
@@ -159,14 +158,11 @@ class newStore {
 }
 
 const TriviaStore = new newStore();  
+let store = TriviaStore.getInitialStore();  
 console.log(store);
 
-
-
-// }
-
-
 // class Renderer {
+
 // }
 
 const TOP_LEVEL_COMPONENTS = [
@@ -179,15 +175,11 @@ let QUESTIONS = [];
 // token is global because store is reset between quiz games, but token should persist for 
 // entire session
 
-
 // Helper functions
 // ===============
 const hideAll = function() {
   TOP_LEVEL_COMPONENTS.forEach(component => $(`.${component}`).hide());
 };
-
-
-
 
 
 const getQuestion = function(index) {
@@ -196,21 +188,30 @@ const getQuestion = function(index) {
 
 // HTML generator functions
 // ========================
-const generateAnswerItemHtml = function(answer) {
-  return `
+
+// Group template generator functions together
+
+class newTemplate {
+  constructor () {
+    //
+  }
+
+  generateAnswerItemHtml(answer) {
+    console.log(this.answer);
+    return `
     <li class="answer-item">
       <input type="radio" name="answers" value="${answer}" />
       <span class="answer-text">${answer}</span>
     </li>
   `;
-};
+  }
 
-const generateQuestionHtml = function(question) {
-  const answers = question.answers
-    .map((answer, index) => generateAnswerItemHtml(answer, index))
-    .join('');
+  generateQuestionHtml(question) {
+    const answers = question.answers
+      .map((answer, index) => this.generateAnswerItemHtml(answer, index))
+      .join('');
 
-  return `
+    return `
     <form>
       <fieldset>
         <legend class="question-text">${question.text}</legend>
@@ -219,16 +220,21 @@ const generateQuestionHtml = function(question) {
       </fieldset>
     </form>
   `;
-};
+  }
 
-const generateFeedbackHtml = function(feedback) {
-  return `
-    <p>
-      ${feedback}
-    </p>
-    <button class="continue js-continue">Continue</button>
-  `;
-};
+  generateFeedbackHtml(feedback) {
+    return `
+      <p>
+        ${feedback}
+      </p>
+      <button class="continue js-continue">Continue</button>
+    `;
+  }
+}
+
+const TriviaTemplate = new newTemplate();
+
+
 
 // Render function - uses `store` object to construct entire page every time it's run
 // ===============
@@ -256,14 +262,14 @@ const render = function() {
     break;
     
   case 'question':
-    html = generateQuestionHtml(question);
+    html = TriviaTemplate.generateQuestionHtml(question);
     $('.js-question').html(html);
     $('.js-question').show();
     $('.quiz-status').show();
     break;
 
   case 'answer':
-    html = generateFeedbackHtml(feedback);
+    html = TriviaTemplate.generateFeedbackHtml(feedback);
     $('.js-question-feedback').html(html);
     $('.js-question-feedback').show();
     $('.quiz-status').show();
@@ -282,7 +288,7 @@ const render = function() {
 // Event handler functions
 // =======================
 const handleStartQuiz = function() {
-  store = getInitialStore();
+  store = TriviaStore.getInitialStore();
   store.page = 'question';
   store.currentQuestionIndex = 0;
   const quantity = parseInt($('#js-question-quantity').find(':selected').val(), 10);
@@ -322,8 +328,11 @@ const handleNextQuestion = function() {
 const TriviaCall = new NewApiCall('https://opentdb.com'); 
 
 
+
+
 // On DOM Ready, run render() and add event listeners
 $(() => {
+  
   // Run first render
   render();
   
