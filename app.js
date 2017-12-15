@@ -16,13 +16,13 @@
 
 // Group API functions together
 
-
+// API Data Retrieval 
+// ===============
 let sessionToken;
 
 class NewApiCall {
   
-  constructor(baseurl) {
-    let sessionToken;    
+  constructor(baseurl) {   
     this.sessionToken = null;
     this.baseURL = baseurl;
     // this.fetchToken();
@@ -42,7 +42,7 @@ class NewApiCall {
     const url = new URL(this.baseURL + '/api.php');
     const queryKeys = Object.keys(query);
     url.searchParams.set('amount', amt);
-  
+    
     if (store.sessionToken) {
       url.searchParams.set('token', store.sessionToken);
     }
@@ -66,39 +66,34 @@ class NewApiCall {
   }
 }
 
-const TriviaCall = new NewApiCall('https://opentdb.com');
-const TriviaCall2 = new NewApiCall();
 
-
-console.log(TriviaCall);
-console.log(TriviaCall2);
-// ApiCall.testNewObject();
-// ApiCall.buildTokenUrl();
-
-
-
-
-
-// Decorator functions
+// Decorate API Data Retrieval 
 // ===============
-const fetchQuestions = function(amt, query, callback) {
-  $.getJSON(TriviaCall.buildBaseUrl(amt, query), callback, err => console.log(err.message));
-};
+class ApiDecoration  {
+  
+  constructor() {   
+  
+  }
 
-const seedQuestions = function(questions) {
-  QUESTIONS.length = 0;
-  questions.forEach(q => QUESTIONS.push(createQuestion(q)));
-};
+  fetchQuestions(amt, query, callback) {
+    $.getJSON(TriviaCall.buildBaseUrl(amt, query), callback, err => console.log(err.message));
+  }
+    
+  seedQuestions(questions) {
+    QUESTIONS.length = 0;
+    questions.forEach(q => QUESTIONS.push(createQuestion(q)));
+  }
+  
+  fetchAndSeedQuestions(amt, query, callback) {
+    this.fetchQuestions(amt, query, res => {
+      this.seedQuestions(res.results);
+      callback();
+    });  
+  }
+}
 
-const fetchAndSeedQuestions = function(amt, query, callback) {
-  fetchQuestions(amt, query, res => {
-    seedQuestions(res.results);
-    callback();
-  });
-};
-
-
-
+const TriviaDecoration = new ApiDecoration();
+console.log(TriviaDecoration);
 
 // class Store {
 
@@ -274,7 +269,7 @@ const handleStartQuiz = function() {
   store.page = 'question';
   store.currentQuestionIndex = 0;
   const quantity = parseInt($('#js-question-quantity').find(':selected').val(), 10);
-  fetchAndSeedQuestions(quantity, { type: 'multiple' }, () => {
+  TriviaDecoration.fetchAndSeedQuestions(quantity, { type: 'multiple' }, () => {
     render();
   });
 };
@@ -306,6 +301,8 @@ const handleNextQuestion = function() {
   store.page = 'question';
   render();
 };
+
+const TriviaCall = new NewApiCall('https://opentdb.com');  
 
 // On DOM Ready, run render() and add event listeners
 $(() => {
