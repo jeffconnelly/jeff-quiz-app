@@ -7,7 +7,6 @@
 // -Any function in the global space should be placed within the context of one of the top level objects
 
 
-// Group STORE manipulation functions together
 // Group render functions together, render function can sit in object as well?
 // Group template generator functions together
 // Group event listeners together?
@@ -72,7 +71,7 @@ class NewApiCall {
 class ApiDecoration  {
   
   constructor() {   
-  
+  //Does this need constructor properties? Or just group functions together?
   }
 
   fetchQuestions(amt, query, callback) {
@@ -81,7 +80,7 @@ class ApiDecoration  {
     
   seedQuestions(questions) {
     QUESTIONS.length = 0;
-    questions.forEach(q => QUESTIONS.push(createQuestion(q)));
+    questions.forEach(q => QUESTIONS.push(this.createQuestion(q)));
   }
   
   fetchAndSeedQuestions(amt, query, callback) {
@@ -90,12 +89,57 @@ class ApiDecoration  {
       callback();
     });  
   }
+
+  createQuestion(question) {
+    // Copy incorrect_answers array into new all answers array
+    const answers = [ ...question.incorrect_answers ];
+  
+    // Pick random index from total answers length (incorrect_answers length + 1 correct_answer)
+    const randomIndex = Math.floor(Math.random() * (question.incorrect_answers.length + 1));
+  
+    // Insert correct answer at random place
+    answers.splice(randomIndex, 0, question.correct_answer);
+  
+    return {
+      text: question.question,
+      correctAnswer: question.correct_answer,
+      answers
+    };
+  }
 }
+
 
 const TriviaDecoration = new ApiDecoration();
 console.log(TriviaDecoration);
 
+
+
+// Group STORE manipulation functions together
+
 // class Store {
+
+const getInitialStore = function(){
+  return {
+    page: 'intro',
+    currentQuestionIndex: null,
+    userAnswers: [],
+    feedback: null,
+    sessionToken,
+  };
+};
+  
+let store = getInitialStore();
+
+const getProgress = function() {
+  return {
+    current: store.currentQuestionIndex + 1,
+    total: QUESTIONS.length
+  };
+};
+
+const getCurrentQuestion = function() {
+  return QUESTIONS[store.currentQuestionIndex];
+};
 
 // }
 
@@ -117,17 +161,7 @@ let QUESTIONS = [];
 // entire session
 
 
-const getInitialStore = function(){
-  return {
-    page: 'intro',
-    currentQuestionIndex: null,
-    userAnswers: [],
-    feedback: null,
-    sessionToken,
-  };
-};
 
-let store = getInitialStore();
 
 // Helper functions
 // ===============
@@ -136,22 +170,6 @@ const hideAll = function() {
 };
 
 // Decorate API question object into our Quiz App question format
-const createQuestion = function(question) {
-  // Copy incorrect_answers array into new all answers array
-  const answers = [ ...question.incorrect_answers ];
-
-  // Pick random index from total answers length (incorrect_answers length + 1 correct_answer)
-  const randomIndex = Math.floor(Math.random() * (question.incorrect_answers.length + 1));
-
-  // Insert correct answer at random place
-  answers.splice(randomIndex, 0, question.correct_answer);
-
-  return {
-    text: question.question,
-    correctAnswer: question.correct_answer,
-    answers
-  };
-};
 
 const getScore = function() {
   return store.userAnswers.reduce((accumulator, userAnswer, index) => {
@@ -165,16 +183,7 @@ const getScore = function() {
   }, 0);
 };
 
-const getProgress = function() {
-  return {
-    current: store.currentQuestionIndex + 1,
-    total: QUESTIONS.length
-  };
-};
 
-const getCurrentQuestion = function() {
-  return QUESTIONS[store.currentQuestionIndex];
-};
 
 const getQuestion = function(index) {
   return QUESTIONS[index];
