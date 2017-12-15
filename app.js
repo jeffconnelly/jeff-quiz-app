@@ -1,6 +1,116 @@
 'use strict';
 
-const BASE_API_URL = 'https://opentdb.com';
+// -Create classes so any functions related to a certain part of our process in the app, bunch them together into an 
+// appropriate object and have the methods on that object available.
+// -Want to get away from all of our globals.  
+// -Find a place for it within one of our tobal level objects we'll create
+// -Any function in the global space should be placed within the context of one of the top level objects
+
+
+// Group STORE manipulation functions together
+// Group render functions together, render function can sit in object as well?
+// Group template generator functions together
+// Group event listeners together?
+
+
+
+// Group API functions together
+
+
+let sessionToken;
+
+class NewApiCall {
+  
+  constructor(baseurl) {
+    let sessionToken;    
+    this.sessionToken = null;
+    this.baseURL = baseurl;
+    // this.fetchToken();
+  }
+
+  //Set API methods 
+  testNewObject() {
+    console.log('hello');
+  }
+
+  buildTokenUrl() {
+    console.log(this.baseURL + '/api_token.php');
+    return new URL(this.baseURL + '/api_token.php');
+  }
+
+  buildBaseUrl(amt = 10, query = {}) {
+    const url = new URL(this.baseURL + '/api.php');
+    const queryKeys = Object.keys(query);
+    url.searchParams.set('amount', amt);
+  
+    if (store.sessionToken) {
+      url.searchParams.set('token', store.sessionToken);
+    }
+  
+    queryKeys.forEach(key => url.searchParams.set(key, query[key]));
+    return url;
+  }
+
+  fetchToken(callback) {
+    if (sessionToken) {
+      return callback();
+    }
+
+    const url = this.buildTokenUrl();
+    url.searchParams.set('command', 'request');
+  
+    $.getJSON(url, res => {
+      sessionToken = res.token;
+      callback();
+    }, err => console.log(err));
+  }
+}
+
+const TriviaCall = new NewApiCall('https://opentdb.com');
+const TriviaCall2 = new NewApiCall();
+
+
+console.log(TriviaCall);
+console.log(TriviaCall2);
+// ApiCall.testNewObject();
+// ApiCall.buildTokenUrl();
+
+
+
+
+
+// Decorator functions
+// ===============
+const fetchQuestions = function(amt, query, callback) {
+  $.getJSON(TriviaCall.buildBaseUrl(amt, query), callback, err => console.log(err.message));
+};
+
+const seedQuestions = function(questions) {
+  QUESTIONS.length = 0;
+  questions.forEach(q => QUESTIONS.push(createQuestion(q)));
+};
+
+const fetchAndSeedQuestions = function(amt, query, callback) {
+  fetchQuestions(amt, query, res => {
+    seedQuestions(res.results);
+    callback();
+  });
+};
+
+
+
+
+// class Store {
+
+// }
+
+
+// class Renderer {
+
+// }
+
+
+
 const TOP_LEVEL_COMPONENTS = [
   'js-intro', 'js-question', 'js-question-feedback', 
   'js-outro', 'js-quiz-status'
@@ -10,7 +120,7 @@ let QUESTIONS = [];
 
 // token is global because store is reset between quiz games, but token should persist for 
 // entire session
-let sessionToken;
+
 
 const getInitialStore = function(){
   return {
@@ -28,53 +138,6 @@ let store = getInitialStore();
 // ===============
 const hideAll = function() {
   TOP_LEVEL_COMPONENTS.forEach(component => $(`.${component}`).hide());
-};
-
-const buildBaseUrl = function(amt = 10, query = {}) {
-  const url = new URL(BASE_API_URL + '/api.php');
-  const queryKeys = Object.keys(query);
-  url.searchParams.set('amount', amt);
-
-  if (store.sessionToken) {
-    url.searchParams.set('token', store.sessionToken);
-  }
-
-  queryKeys.forEach(key => url.searchParams.set(key, query[key]));
-  return url;
-};
-
-const buildTokenUrl = function() {
-  return new URL(BASE_API_URL + '/api_token.php');
-};
-
-const fetchToken = function(callback) {
-  if (sessionToken) {
-    return callback();
-  }
-
-  const url = buildTokenUrl();
-  url.searchParams.set('command', 'request');
-
-  $.getJSON(url, res => {
-    sessionToken = res.token;
-    callback();
-  }, err => console.log(err));
-};
-
-const fetchQuestions = function(amt, query, callback) {
-  $.getJSON(buildBaseUrl(amt, query), callback, err => console.log(err.message));
-};
-
-const seedQuestions = function(questions) {
-  QUESTIONS.length = 0;
-  questions.forEach(q => QUESTIONS.push(createQuestion(q)));
-};
-
-const fetchAndSeedQuestions = function(amt, query, callback) {
-  fetchQuestions(amt, query, res => {
-    seedQuestions(res.results);
-    callback();
-  });
 };
 
 // Decorate API question object into our Quiz App question format
@@ -172,35 +235,35 @@ const render = function() {
   $('.js-progress').html(`<span>Question ${current} of ${total}`);
 
   switch (store.page) {
-    case 'intro':
-      if (sessionToken) {
-        $('.js-start').attr('disabled', false);
-      }
+  case 'intro':
+    if (sessionToken) {
+      $('.js-start').attr('disabled', false);
+    }
   
-      $('.js-intro').show();
-      break;
+    $('.js-intro').show();
+    break;
     
-    case 'question':
-      html = generateQuestionHtml(question);
-      $('.js-question').html(html);
-      $('.js-question').show();
-      $('.quiz-status').show();
-      break;
+  case 'question':
+    html = generateQuestionHtml(question);
+    $('.js-question').html(html);
+    $('.js-question').show();
+    $('.quiz-status').show();
+    break;
 
-    case 'answer':
-      html = generateFeedbackHtml(feedback);
-      $('.js-question-feedback').html(html);
-      $('.js-question-feedback').show();
-      $('.quiz-status').show();
-      break;
+  case 'answer':
+    html = generateFeedbackHtml(feedback);
+    $('.js-question-feedback').html(html);
+    $('.js-question-feedback').show();
+    $('.quiz-status').show();
+    break;
 
-    case 'outro':
-      $('.js-outro').show();
-      $('.quiz-status').show();
-      break;
+  case 'outro':
+    $('.js-outro').show();
+    $('.quiz-status').show();
+    break;
 
-    default:
-      return;
+  default:
+    return;
   }
 };
 
@@ -250,7 +313,7 @@ $(() => {
   render();
   
   // Fetch session token, re-render when complete
-  fetchToken(() => {
+  TriviaCall.fetchToken(() => {
     render();
   });
 
