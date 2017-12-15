@@ -69,7 +69,6 @@ class NewApiCall {
 // Decorate API Data Retrieval 
 // ===============
 class ApiDecoration  {
-  
   constructor() {   
   //Does this need constructor properties? Or just group functions together?
   }
@@ -108,17 +107,15 @@ class ApiDecoration  {
   }
 }
 
-
 const TriviaDecoration = new ApiDecoration();
 console.log(TriviaDecoration);
 
 
+// Store Section
+// ===============
 
-// Group STORE manipulation functions together
 
-// class Store {
-
-const getInitialStore = function(){
+const getInitialStore = function() {
   return {
     page: 'intro',
     currentQuestionIndex: null,
@@ -126,29 +123,51 @@ const getInitialStore = function(){
     feedback: null,
     sessionToken,
   };
-};
-  
-let store = getInitialStore();
+}
 
-const getProgress = function() {
-  return {
-    current: store.currentQuestionIndex + 1,
-    total: QUESTIONS.length
-  };
-};
+let store = getInitialStore();  
 
-const getCurrentQuestion = function() {
-  return QUESTIONS[store.currentQuestionIndex];
-};
+class newStore {
+
+  constructor () {
+
+  }
+
+  getProgress() {
+    return {
+      current: store.currentQuestionIndex + 1,
+      total: QUESTIONS.length
+    };
+  }
+
+  getCurrentQuestion() {
+    return QUESTIONS[store.currentQuestionIndex];
+  }
+
+  // Decorate API question object into our Quiz App question format
+  getScore() {
+    return store.userAnswers.reduce((accumulator, userAnswer, index) => {
+      const question = getQuestion(index);
+
+      if (question.correctAnswer === userAnswer) {
+        return accumulator + 1;
+      } else {
+        return accumulator;
+      }
+    }, 0);
+  }
+}
+
+const TriviaStore = new newStore();  
+console.log(store);
+
+
 
 // }
 
 
 // class Renderer {
-
 // }
-
-
 
 const TOP_LEVEL_COMPONENTS = [
   'js-intro', 'js-question', 'js-question-feedback', 
@@ -161,27 +180,13 @@ let QUESTIONS = [];
 // entire session
 
 
-
-
 // Helper functions
 // ===============
 const hideAll = function() {
   TOP_LEVEL_COMPONENTS.forEach(component => $(`.${component}`).hide());
 };
 
-// Decorate API question object into our Quiz App question format
 
-const getScore = function() {
-  return store.userAnswers.reduce((accumulator, userAnswer, index) => {
-    const question = getQuestion(index);
-
-    if (question.correctAnswer === userAnswer) {
-      return accumulator + 1;
-    } else {
-      return accumulator;
-    }
-  }, 0);
-};
 
 
 
@@ -228,14 +233,17 @@ const generateFeedbackHtml = function(feedback) {
 // Render function - uses `store` object to construct entire page every time it's run
 // ===============
 const render = function() {
+  console.log(store);
+  console.log(TriviaStore);
+  console.log(TriviaStore.getCurrentQuestion);
   let html;
   hideAll();
-
-  const question = getCurrentQuestion();
+  const question = TriviaStore.getCurrentQuestion();
+  console.log(TriviaStore.getCurrentQuestion);
   const { feedback } = store; 
-  const { current, total } = getProgress();
+  const { current, total } = TriviaStore.getProgress();
 
-  $('.js-score').html(`<span>Score: ${getScore()}</span>`);
+  $('.js-score').html(`<span>Score: ${TriviaStore.getScore()}</span>`);
   $('.js-progress').html(`<span>Question ${current} of ${total}`);
 
   switch (store.page) {
@@ -285,7 +293,7 @@ const handleStartQuiz = function() {
 
 const handleSubmitAnswer = function(e) {
   e.preventDefault();
-  const question = getCurrentQuestion();
+  const question = TriviaStore.getCurrentQuestion();
   const selected = $('input:checked').val();
   store.userAnswers.push(selected);
   
@@ -311,7 +319,8 @@ const handleNextQuestion = function() {
   render();
 };
 
-const TriviaCall = new NewApiCall('https://opentdb.com');  
+const TriviaCall = new NewApiCall('https://opentdb.com'); 
+
 
 // On DOM Ready, run render() and add event listeners
 $(() => {
