@@ -195,7 +195,7 @@ class newTemplate {
       <fieldset>
         <legend class="question-text">${question.text}</legend>
           ${answers}
-          <button type="submit">Submit</button>
+          <button type="submit" class="btn btn-success submit-btn">Submit</button>
       </fieldset>
     </form>
   `;
@@ -206,7 +206,7 @@ class newTemplate {
       <p>
         ${feedback}
       </p>
-      <button class="continue js-continue">Continue</button>
+      <button class="continue js-continue btn btn-secondary">Continue</button>
     `;
   }
 }
@@ -252,7 +252,7 @@ const render = function() {
   const { current, total } = TriviaStore.getProgress();
 
   $('.js-score').html(`<span>Score: ${TriviaStore.getScore()}</span>`);
-  $('.js-progress').html(`<span>Question ${current} of ${total}`);
+  $('.js-progress').html(`<span>Question ${current} of ${total}</span>`);
 
   switch (store.page) {
   case 'intro':

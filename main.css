@@ -1,3 +1,78 @@
+html, body {
+  background:
+  linear-gradient(
+		rgba(255, 255, 255, 0.2),
+		rgba(255, 255, 255, 0.2)),
+    url(https://images.unsplash.com/photo-1464802686167-b939a6910659?auto=format&fit=crop&w=1033&q=80) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    font-size: 1em;
+}
+
+body {
+  font-size: 20px;
+}
+
+main {
+  margin: 0 auto;
+  margin-top: 10vh;
+  max-width: 55vw;
+  max-height: 100vh;
+  padding-top: 20px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-bottom: 20px;
+  border-radius: 10px;
+  background-color: #f2f0f0;
+}
+
+h1 {
+  text-align: center;
+  color: white;
+  text-shadow: 2px 2px black;
+  margin: 0 auto;
+  max-width: 50%;
+  margin-top: 5vh;
+  font-size: 3em;
+}
+
+
+/* Overwrite boostrap defaults for question and score count display */
+.score {
+  font-size: 1em;
+  background-color: none;
+}
+
+#progress2 {
+  height: 1.5rem;
+  font-size: 1.2rem;
+  background-color: #f2f0f0;
+}
+
+
+.intro {
+  text-align: center;
+}
+#js-question-quantity {
+  display: block;
+  margin: 10px auto;
+}
+/* Button Styling */
+.start {
+  /* width: 20%;
+  padding-left: 40%;
+  padding-right: 40%; */
+  display: block;
+  margin: 20px auto;
+}
+
+.submit-btn {
+  margin-top: 10px;
+}
+
+/* Hidden sections on page load */
 .quiz-status, .outro {
   display: none;
 }
@@ -5,4 +80,3 @@
 .answer-item {
   list-style-type: none;
 }
-
