@@ -1,22 +1,13 @@
 html, body {
-  /* background:
-  linear-gradient(
-		rgba(255, 255, 255, 0.2),
-		rgba(255, 255, 255, 0.2)),
-    url(https://cdn.pixabay.com/photo/2016/01/04/17/04/pink-1121216_960_720.jpg) no-repeat center center fixed;
-     */
     font-size: 1em;
     font-family: 'Lato', sans-serif;
-    background: #fc00ff;  /* fallback for old browsers */
-  background: -webkit-linear-gradient(to right, #00dbde, #fc00ff);  /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to right, #00dbde, #fc00ff); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
-
+    background: #c2e59c;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #64b3f4, #c2e59c);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #64b3f4, #c2e59c); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
-
 }
 
 body {
@@ -48,8 +39,19 @@ h1 {
   font-weight: 700;
 }
 
+/* Start Section */
+.intro {
+  text-align: center;
+}
 
-/* Overwrite boostrap defaults for question and score count display */
+/* Quiz Section */
+#js-question-quantity {
+  display: block;
+  margin: 10px auto;
+}
+
+
+/* Overwrite boostrap defaults */
 .score {
   font-size: 1em;
   background-color: none;
@@ -61,19 +63,12 @@ h1 {
   background-color: #f2f0f0;
 }
 
+ul {
+  padding-left: 0;
+}
 
-.intro {
-  text-align: center;
-}
-#js-question-quantity {
-  display: block;
-  margin: 10px auto;
-}
 /* Button Styling */
 .start {
-  /* width: 20%;
-  padding-left: 40%;
-  padding-right: 40%; */
   display: block;
   margin: 20px auto;
 }
@@ -81,6 +76,12 @@ h1 {
 .submit-btn {
   margin-top: 10px;
 }
+
+.radio {
+  width: 18px;
+  height: 18px;
+}
+
 
 /* Hidden sections on page load */
 .quiz-status, .outro {

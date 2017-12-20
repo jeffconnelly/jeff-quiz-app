@@ -1,6 +1,5 @@
 'use strict';
 
-
 // API Data Retrieval 
 // =============== 
 let sessionToken;
@@ -157,16 +156,12 @@ class newTemplate {
   generateAnswerItemHtml(answer) {
     console.log(this.answer);
     return `
-    <form class="generate-answers>
     <ul>
-    <li class="answer-item">
-    <fieldset>
-      <input type="radio" name="answers" value="${answer}"  aria-live="polite" />
-      <span class="answer-text">${answer}</span>
-    </fieldset>
-    </li>
+      <li class="answer-item">
+         <input type="radio" name="answers" value="${answer}"  aria-live="polite" class="radio" />
+         <span class="answer-text">${answer}</span>
+      </li>
     </ul>
-    </form>
   `;
   }
 
@@ -177,11 +172,9 @@ class newTemplate {
 
     return `
     <form label="question-form" aria-live="assertive">
-      <fieldset>
         <legend class="question-text ">${question.text}</legend>
           ${answers}
-          <button type="submit" class="btn btn-success submit-btn">Submit</button>
-      </fieldset>
+          <button type="submit" class="btn btn-primary submit-btn">Submit</button>
     </form>
   `;
   }
@@ -233,7 +226,7 @@ const render = function() {
   const { current, total } = TriviaStore.getProgress();
 
   $('.js-score').html(`<span>Score: ${TriviaStore.getScore()}</span>`);
-  $('.js-progress').html(`<span>Question ${current} of ${total}</span>`);
+  $('.js-progress').html(`<span>Question: ${current} of ${total}</span>`);
 
   switch (store.page) {
   case 'intro':
