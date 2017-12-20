@@ -1,14 +1,22 @@
 html, body {
-  background:
+  /* background:
   linear-gradient(
 		rgba(255, 255, 255, 0.2),
 		rgba(255, 255, 255, 0.2)),
-    url(https://images.unsplash.com/photo-1464802686167-b939a6910659?auto=format&fit=crop&w=1033&q=80) no-repeat center center fixed;
+    url(https://cdn.pixabay.com/photo/2016/01/04/17/04/pink-1121216_960_720.jpg) no-repeat center center fixed;
+     */
+    font-size: 1em;
+    font-family: 'Lato', sans-serif;
+    background: #fc00ff;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #00dbde, #fc00ff);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #00dbde, #fc00ff); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
-    font-size: 1em;
+
 }
 
 body {
@@ -30,12 +38,14 @@ main {
 
 h1 {
   text-align: center;
+  letter-spacing: 2px;
   color: white;
   text-shadow: 2px 2px black;
   margin: 0 auto;
   max-width: 50%;
   margin-top: 5vh;
   font-size: 3em;
+  font-weight: 700;
 }
 
 

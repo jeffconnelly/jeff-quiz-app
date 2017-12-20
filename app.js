@@ -1,27 +1,8 @@
 'use strict';
 
 
-// OOP Notes:
-// =============== 
-// Create classes so any functions related to a certain part of our process in the app, bunch them together to an appropriate object and have the methods on that object available.
-// Want to get away from all of our globals.  
-// Find a place for it within one of our tobal level objects we'll create
-// Any function in the global space should be placed within the context of one of the top level objects
-// Expect to use a constructor for setting 1) default values or 2) values passed in when creating the object.
-
-
-
-// Remaining to Group:
-// =============== 
-// Group render functions together, render function can sit in object as well?
-/* Group event listeners together ..?
-  From Rich: I've seen solutions both ways. they need access to the store, the api, the renderer... so they do need to be passed those instantiations or live in one of the classes that has access to them.  our sample solution has the handlers in the renderer class  
-  */
-
-
-
 // API Data Retrieval 
-// =============== Need to move global session Token into NewApiCall
+// =============== 
 let sessionToken;
 
 class NewApiCall {
@@ -29,7 +10,6 @@ class NewApiCall {
   constructor(baseurl) {   
     this.sessionToken = null;
     this.baseURL = baseurl;
-    // this.fetchToken();
   }
 
   //Set API methods 
@@ -75,7 +55,6 @@ class NewApiCall {
 // ===============
 class ApiDecoration  {
   constructor() {   
-  //Does this need constructor properties? Or just group functions together?
   }
 
   fetchQuestions(amt, query, callback) {
@@ -116,7 +95,7 @@ const TriviaDecoration = new ApiDecoration();
 console.log(TriviaDecoration);
 
 // Create Store
-// =============== Need to move global store into newStore constructor.
+// =============== 
 class newStore {
 
   constructor () {
@@ -178,10 +157,16 @@ class newTemplate {
   generateAnswerItemHtml(answer) {
     console.log(this.answer);
     return `
+    <form class="generate-answers>
+    <ul>
     <li class="answer-item">
-      <input type="radio" name="answers" value="${answer}" />
+    <fieldset>
+      <input type="radio" name="answers" value="${answer}"  aria-live="polite" />
       <span class="answer-text">${answer}</span>
+    </fieldset>
     </li>
+    </ul>
+    </form>
   `;
   }
 
@@ -191,9 +176,9 @@ class newTemplate {
       .join('');
 
     return `
-    <form>
+    <form label="question-form" aria-live="assertive">
       <fieldset>
-        <legend class="question-text">${question.text}</legend>
+        <legend class="question-text ">${question.text}</legend>
           ${answers}
           <button type="submit" class="btn btn-success submit-btn">Submit</button>
       </fieldset>
@@ -203,7 +188,7 @@ class newTemplate {
 
   generateFeedbackHtml(feedback) {
     return `
-      <p>
+      <p aria-live="polite">
         ${feedback}
       </p>
       <button class="continue js-continue btn btn-secondary">Continue</button>
@@ -213,12 +198,8 @@ class newTemplate {
 
 const TriviaTemplate = new newTemplate();
 
-// Render Class Here
+// Top level components
 // =============== 
-
-// class Renderer {
-
-// }
 
 const TOP_LEVEL_COMPONENTS = [
   'js-intro', 'js-question', 'js-question-feedback', 
@@ -227,7 +208,7 @@ const TOP_LEVEL_COMPONENTS = [
 
 let QUESTIONS = [];
 
-// Helper functions - remaining placed with render class?
+// Helper functions 
 // ===============
 const hideAll = function() {
   TOP_LEVEL_COMPONENTS.forEach(component => $(`.${component}`).hide());
@@ -238,7 +219,7 @@ const getQuestion = function(index) {
 };
 
 
-// Render function - uses `store` object to construct entire page every time it's run
+// Render function
 // ===============
 const render = function() {
   console.log(store);
@@ -306,7 +287,7 @@ const handleSubmitAnswer = function(e) {
   store.userAnswers.push(selected);
   
   if (selected === question.correctAnswer) {
-    store.feedback = 'You got it!';
+    store.feedback = 'That is correct!';
   } else {
     store.feedback = `Too bad! The correct answer was: ${question.correctAnswer}`;
   }
